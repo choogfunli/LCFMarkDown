@@ -13,6 +13,14 @@ NSThread使用
 ```markdown
 Syntax highlighted code block
 
+ //创建线程
+ NSThread *newThread = [[NSThread alloc]initWithTarget:self selector:@selector(demo:) object:@"Thread"];
+ //或者
+ NSThread  *newThread=[[NSThread alloc]init];
+ NSThread  *newThread= [[NSThread alloc]initWithBlock:^{
+     NSLog(@"initWithBlock");
+ }];
+
 # Header 1
 ## Header 2
 ### Header 3
