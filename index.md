@@ -1,14 +1,14 @@
-## iOS多线程编程
+# iOS多线程编程
 
 You can use the [editor on GitHub](https://github.com/choogfunli/LCFMarkDown/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### NSThread
+# NSThread
 
 NSThread使用
 
-# 1、实例初始化、
+## 1、实例初始化、
 
 ```markdown
  //创建线程
@@ -20,7 +20,7 @@ NSThread使用
  }];
  ```
 
-# 2、常用实例方法
+## 2、常用实例方法
 
 -(void)start; 实例化线程需要手动启动
 
@@ -70,7 +70,7 @@ BOOL isEnd = [thread isFinished];
 BOOL isCancel = [thread isCancelled];
 ```
 
-# 3、类方法
+## 3、类方法
 
 +(void)currentThread;获取当前线程
 ```markdown
@@ -107,7 +107,7 @@ double dPriority=[NSThread threadPriority];
 BOOL isSetting=[NSThread setThreadPriority:(0.0~1.0)];
 ```
 
-# 4、隐式创建&线程间通讯
+## 4、隐式创建&线程间通讯
 ```markdown
 /**
   指定方法在主线程中执行
@@ -138,12 +138,12 @@ BOOL isSetting=[NSThread setThreadPriority:(0.0~1.0)];
 再注意：苹果声明UI更新一定要在UI线程（主线程）中执行，虽然不是所有后台线程更新UI都会出错。
 ```
 
-# 5、线程间资源共享&线程加锁
+## 5、线程间资源共享&线程加锁
 在程序运行过程中，如果存在多线程，那么各个线程读写资源就会存在先后、同时读写资源的操作，因为是在不同线程，CPU调度过程中我们无法保证哪个线程会先读写资源，哪个线程后读写资源。因此为了防止数据读写混乱和错误的发生，我们要将线程在读写数据时加锁，这样就能保证操作同一个数据对象的线程只有一个，当这个线程执行完成之后解锁，其他的线程才能操作此数据对象。
 
 NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程上锁的操作。
 
-1、@synchronized
+### 1、@synchronized
 首先：开启两个线程同时售票
 ```markdown
     self.tickets = 20;
@@ -176,7 +176,7 @@ NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程�
     }
 }
 ```
-2、NSLock
+### 2、NSLock
 ```markdown
   -(BOOL)tryLock;//尝试加锁，成功返回YES ；失败返回NO ，但不会阻塞线程的运行
   -(BOOL)lockBeforeDate:(NSDate *)limit;//在指定的时间以前得到锁。YES:在指定时间之前获得了锁；NO：在指定时间之前没有获得锁。该线程将被阻塞，直到获得了锁，或者指定时间过期。
@@ -185,7 +185,7 @@ NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程�
     @property (nullable, copy) NSString *name;线程锁名称 
 ```
 
-3、NSConditionLock
+### 3、NSConditionLock
 ```markdown
 使用此锁，在线程没有获得锁的情况下，阻塞，即暂停运行，典型用于生产者／消费者模型。
 - (instancetype)initWithCondition:(NSInteger)condition;//初始化条件锁
@@ -199,21 +199,20 @@ NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程�
 @property (nullable, copy) NSString *name;//条件锁的名称
 ```
 
-4、NSRecursiveLock
+### 4、NSRecursiveLock
 ```markdown
 此锁可以在同一线程中多次被使用，但要保证加锁与解锁使用平衡，多用于递归函数，防止死锁。
 - (BOOL)tryLock;//尝试加锁，成功返回TRUE，失败返回FALSE
 - (BOOL)lockBeforeDate:(NSDate *)limit;//在指定时间前尝试加锁，成功返回TRUE，失败返回FALSE
 ```
 
-5、线程安全之原子属性 atomic
-原子属性（线程安全）与非原子属性，平时我们@property声明对象属性时会用到nonatomic，是什么意思呢？
+### 5、线程安全之原子属性 atomic
 苹果系统在我们声明对象属性时默认是atomic，也就是说在读写这个属性的时候，保证同一时间内只有一个线程能够执行。当声明时用的是atomic，通常会生成 _成员变量 如果同时重写了getter&setter _成员变量 就不自动生成。实际上原子属性内部有一个锁，叫做“自旋锁”。
 首先我们比较一下“自旋锁” & “互斥锁”的异同，然后回答上面的问题
 
-# 共同点
+### 共同点
 都能够保证线程安全
-# 不同点
+### 不同点
 互斥锁：如果其他线程正在执行锁定的代码，此线程就会进入休眠状态，等待锁打开；然后被唤醒
 自旋锁：如果线程被锁在外面，哥么就会用死循环的方式一直等待锁打开！
 无论什么锁，都很消耗性能，效率不高，所以在我们平时开发过程中，会使用nonatomic
@@ -223,10 +222,55 @@ NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程�
 @property (strong,    atomic) NSObject *myAtomic;
 ```
 
-### GCD
+# GCD
 
+1）dispatch_async(queue, ^{想执行的任务} );
+这里的queue表示执行处理的等待队列，可以是串行队列也可以是并行队列，串行队列即等待处理的任务先进先出，并行队列即等待处理的任务不需要按顺序执行，可以分出多个线程同时处理
+
+2）创建队列的方法
+dispatch_queue_create   可以生成串行队列和并行队列，dispatch_queue_create可以生成任意数量的serial dispatch queue串行队列，但实际上受到系统资源的限制，容易发生线程竞争的问题
+而concurrent dispatch queue不用创建多个，也不会出现线程竞争的问题，系统只会管理有效执行的线程。
+
+GCD线程需要程序员自己维护，不会像ARC一样，能够自动释放
+dispatch_retain                
+dispatch_release
+
+3) dispatch_get_main_queue 主队列，本质是一个串行队列
+    dispatch_get_global_queue 全局队列，本质是一个并行队列，有优先级（DISPATCH_QUEUE_PRIORITY_HIGH, DISPATCH_QUEUE_PRIORITY_DEFAULT, DISPATCH_QUEUE_PRIORITY_LOW, DISPATCH_QUEUE_PRIORITY_BACKGRAOUND）
+
+dispatch_get_main_queue和dispatch_get_global_queue执行dispatch_retain或者dispatch_release不产生任何影响
+
+4）dispatch_set_target_queue
+dispatch_queue_create 创建的队列，无论是串行还是并行队列，其优先级都等同于dispatch_get_global_queue的DISPATCH_QUEUE_PRIORITY_DEFAULT优先级。
+dispatch_set_target_queue可以改变队列的优先级
+
+5）dispatch_after
+dispatch_after(DISPATCH_TIME_NOW,   3 * NSEC_PER_SEC, dispatch_get_main_queue())；  表示3秒后将要执行的操作添加到队列中
+
+6）dispatch_group
+可以监听group中的队列执行完毕并做结束处理
+
+7) dispatch_barrier_async
+等待追加到Concurrent Dispatch Queue上的并行执行的处理全部结束后，dispatch_barrier_async再将指定的处理追加到队列中，优先执行完了，队列才恢复并发执行。
+
+8）dispatch_sync
+9）dispatch_apply ： 按照指定的次数将指定的Block追加到指定的Dispatch queue中
+10) dispatch_suspend/dispatch_resume
+suspend: 挂起队列，剩下没执行的任务暂时挂起
+resume: 恢复队列
+
+11) dispatch_semaphore_wait  比serial dispatch queue和dispatch_barrier_async更细粒度的排他控制
+dispatch_semaphore_t t = dispatch_semaphore_create(0);   //0表示等待，计数为1或大于1时，减去1而不等待
+dispatch_semaphore_signal(t);   //信号量+1  可以轮到下一个最先等待的线程执行
+dispatch_semaphore_wait(t, DISPATCH_TIME_FOREVER)；  //等待信号
+
+
+12) dispatch_once
+保证在应用程序中只执行一次指定处理的API，常用来单例初始化
+
+网络编程不要用多线程，要用NSURLConnection异步API
 Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/choogfunli/LCFMarkDown/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### NSOperation
+# NSOperation
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
