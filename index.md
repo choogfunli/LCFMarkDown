@@ -224,9 +224,12 @@ NSLock / NSConditionLock / NSRecursiveLock / @synchronized都可以实现线程�
 
 # GCD
 
-1）dispatch_async(queue, ^{想执行的任务} );
+```markdown
+1）[dispatch_async(queue, ^{想执行的任务} );]
 这里的queue表示执行处理的等待队列，可以是串行队列也可以是并行队列，串行队列即等待处理的任务先进先出，并行队列即等待处理的任务不需要按顺序执行，可以分出多个线程同时处理
+```
 
+```markdown
 2）创建队列的方法
 dispatch_queue_create   可以生成串行队列和并行队列，dispatch_queue_create可以生成任意数量的serial dispatch queue串行队列，但实际上受到系统资源的限制，容易发生线程竞争的问题
 而concurrent dispatch queue不用创建多个，也不会出现线程竞争的问题，系统只会管理有效执行的线程。
@@ -234,42 +237,64 @@ dispatch_queue_create   可以生成串行队列和并行队列，dispatch_queue
 GCD线程需要程序员自己维护，不会像ARC一样，能够自动释放
 dispatch_retain                
 dispatch_release
+```
 
+```markdown
 3) dispatch_get_main_queue 主队列，本质是一个串行队列
     dispatch_get_global_queue 全局队列，本质是一个并行队列，有优先级（DISPATCH_QUEUE_PRIORITY_HIGH, DISPATCH_QUEUE_PRIORITY_DEFAULT, DISPATCH_QUEUE_PRIORITY_LOW, DISPATCH_QUEUE_PRIORITY_BACKGRAOUND）
 
 dispatch_get_main_queue和dispatch_get_global_queue执行dispatch_retain或者dispatch_release不产生任何影响
+```
 
+```markdown
 4）dispatch_set_target_queue
 dispatch_queue_create 创建的队列，无论是串行还是并行队列，其优先级都等同于dispatch_get_global_queue的DISPATCH_QUEUE_PRIORITY_DEFAULT优先级。
 dispatch_set_target_queue可以改变队列的优先级
+```
 
+```markdown
 5）dispatch_after
 dispatch_after(DISPATCH_TIME_NOW,   3 * NSEC_PER_SEC, dispatch_get_main_queue())；  表示3秒后将要执行的操作添加到队列中
+```
 
+```markdown
 6）dispatch_group
 可以监听group中的队列执行完毕并做结束处理
+```
 
+```markdown
 7) dispatch_barrier_async
 等待追加到Concurrent Dispatch Queue上的并行执行的处理全部结束后，dispatch_barrier_async再将指定的处理追加到队列中，优先执行完了，队列才恢复并发执行。
+```
 
+```markdown
 8）dispatch_sync
+```
+
+```markdown
 9）dispatch_apply ： 按照指定的次数将指定的Block追加到指定的Dispatch queue中
+```
+
+```markdown
 10) dispatch_suspend/dispatch_resume
 suspend: 挂起队列，剩下没执行的任务暂时挂起
 resume: 恢复队列
+```
 
-11) dispatch_semaphore_wait  比serial dispatch queue和dispatch_barrier_async更细粒度的排他控制
+```markdown
+11) [dispatch_semaphore_wait]  比serial dispatch queue和dispatch_barrier_async更细粒度的排他控制
 dispatch_semaphore_t t = dispatch_semaphore_create(0);   //0表示等待，计数为1或大于1时，减去1而不等待
 dispatch_semaphore_signal(t);   //信号量+1  可以轮到下一个最先等待的线程执行
 dispatch_semaphore_wait(t, DISPATCH_TIME_FOREVER)；  //等待信号
+```
 
-
-12) dispatch_once
+```markdown
+12) [dispatch_once]
 保证在应用程序中只执行一次指定处理的API，常用来单例初始化
+```
 
-网络编程不要用多线程，要用NSURLConnection异步API
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/choogfunli/LCFMarkDown/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+[网络编程不要用多线程，要用NSURLConnection异步API]
+
 
 # NSOperation
 
