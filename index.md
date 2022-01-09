@@ -8,22 +8,27 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 
 NSThread使用
 
-1、实例初始化、
+# 1、实例初始化、
 
 ```markdown
 Syntax highlighted code block
 
  //创建线程
- NSThread *newThread = [[NSThread alloc]initWithTarget:self selector:@selector(demo:) object:@"Thread"];
+ NSThread *newThread = [[NSThread alloc] initWithTarget:self selector:@selector(demo:) object:@"Thread"];
  //或者
- NSThread  *newThread=[[NSThread alloc]init];
- NSThread  *newThread= [[NSThread alloc]initWithBlock:^{
+ NSThread *newThread = [[NSThread alloc] init];
+ NSThread *newThread = [[NSThread alloc] initWithBlock:^{
      NSLog(@"initWithBlock");
  }];
+ ```
 
-# Header 1
-## Header 2
-### Header 3
+# 2、常用实例方法
+
+-(void)start; 实例化线程需要手动启动
+
+```markdown
+[thread start];
+```
 
 - Bulleted
 - List
